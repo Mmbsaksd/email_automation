@@ -49,3 +49,14 @@ class GmailReader:
 
         return messages
     
+    def get_full_message(self, message_id):
+        message = self.service.users().messages().get(
+            userId="me",
+            id=message_id,
+            format="full"
+        ).execute()
+
+        return message
+
+        
+    
