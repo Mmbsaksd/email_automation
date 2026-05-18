@@ -57,6 +57,19 @@ class GmailReader:
         ).execute()
 
         return message
+    
+    def download_attachment(
+            self,
+            message_id,
+            attachment_id
+    ):
+        attachment = self.service.users().messages().attachments().get(
+            userId="me",
+            messageId = message_id,
+            id=attachment_id
+        ).execute()
+
+        return attachment
 
         
     

@@ -1,10 +1,15 @@
 from app.service.email.gmail_reader import GmailReader
 from app.service.email.email_parser import EmailParser
 from app.service.email.email_filter import EmailFilter
+from app.service.email.attachment_parser import AttachmentParser
+from app.service.email.attachment_handler import AttachmentHandler
+from pprint import pprint
 
 parser = EmailParser()
 reader = GmailReader()
 filter = EmailFilter()
+attachment_parser = AttachmentParser()
+attachment_handler = AttachmentHandler()
 
 messages = reader.get_latest_email()
 
@@ -31,5 +36,17 @@ body = parser.extract_body(payload)
 
 parser_headers["body"] = body
 
-#print(payload)
+pdf_attachment = attachment_parser.get_pdf_attachment(
+    payload
+)
+if pdf_attachment:
+    attachment_data  = reader.download_attachment(
+        message_id,
+        pdf_attachment["attachment_id"],
+    )
+    saved_path = attachment_handler.save_pdf(
+        pdf_attachment['filename'],
+        attachment_data['data']
+    )
+    parser_headers["attachment_path"]= str(saved_path)
 print(parser_headers)
