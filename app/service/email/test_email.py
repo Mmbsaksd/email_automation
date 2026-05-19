@@ -5,31 +5,33 @@ from app.service.email.attachment_parser import AttachmentParser
 from app.service.email.attachment_handler import AttachmentHandler
 from app.service.pdf.pdf_reader import PDFReader
 from app.service.ai.invoice_extractor import InvoiceExtractor
+from app.service.excel_writer import ExcelWriter
 
 
 parser = EmailParser()
 reader = GmailReader()
-filter = EmailFilter()
+filter_engine = EmailFilter()
 attachment_parser = AttachmentParser()
 attachment_handler = AttachmentHandler()
 pdf_reader = PDFReader()
 invoice_extractor = InvoiceExtractor()
+excel_writer = ExcelWriter()
 
 messages = reader.get_latest_email()
 
+if not messages:
+    print("No emails found")
+    exit()
+
 message_id = messages[0]["id"]
-
 full_message = reader.get_full_message(message_id)
-
 payload = full_message["payload"]
-
 headers = payload["headers"]
-
 parser_headers = parser.parse_header(headers)
 
 
 
-is_allowed = filter.is_allowed_email(
+is_allowed = filter_engine.is_allowed_email(
     parser_headers["from"]
 )
 if not is_allowed:
@@ -59,5 +61,10 @@ if pdf_attachment:
     invoice_data = invoice_extractor.extract_invoice_data(
         pdf_text
     )
-    parser_headers["invoice_data"] = invoice_data
+    parser_headers["invoice_data"] = invoice_data.model_dump()
+    excel_writer.save_invoice(
+        invoice_data
+    )
+else:
+    print("No PDF attachment found")
 print(parser_headers)

@@ -9,7 +9,7 @@ class InvoiceExtractor:
             api_key=settings.azure_openai_api_key,
             azure_endpoint=settings.azure_openai_endpoint,
             api_version=settings.azure_openai_api_version,
-            deployment_name="gpt-4o-mini",
+            deployment_name="gpt-4o",
             temperature=0
         )
         self.llm = llm.with_structured_output(InvoiceData)
