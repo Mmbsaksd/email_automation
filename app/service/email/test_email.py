@@ -3,13 +3,17 @@ from app.service.email.email_parser import EmailParser
 from app.service.email.email_filter import EmailFilter
 from app.service.email.attachment_parser import AttachmentParser
 from app.service.email.attachment_handler import AttachmentHandler
-from pprint import pprint
+from app.service.pdf.pdf_reader import PDFReader
+from app.service.ai.invoice_extractor import InvoiceExtractor
+
 
 parser = EmailParser()
 reader = GmailReader()
 filter = EmailFilter()
 attachment_parser = AttachmentParser()
 attachment_handler = AttachmentHandler()
+pdf_reader = PDFReader()
+invoice_extractor = InvoiceExtractor()
 
 messages = reader.get_latest_email()
 
@@ -49,4 +53,11 @@ if pdf_attachment:
         attachment_data['data']
     )
     parser_headers["attachment_path"]= str(saved_path)
+
+    pdf_text = pdf_reader.extract_text(saved_path)
+    #parser_headers["pdf_text"] = pdf_text
+    invoice_data = invoice_extractor.extract_invoice_data(
+        pdf_text
+    )
+    parser_headers["invoice_data"] = invoice_data
 print(parser_headers)
