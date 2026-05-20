@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     # Email Sender Filter
     allowed_sender: str = "mmbsaksd@gmail.com"
 
+
+    sap_api_key: str
+    sap_base_url: str
+    sap_supplier_invoice_endpoint: str
+    sap_company_code: str
+    sap_currency: str
+    sap_vendor_id: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
