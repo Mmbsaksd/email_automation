@@ -23,14 +23,23 @@ class SAPClient:
             payload: dict
     ):
         headers = {
+            "apikey": self.api_key,
+            "Accept": "application/json",
             "Content-Type": "application/json",
-            "APIKey": self.api_key
+            "DataServiceVersion": "2.0"
         }
+        print("URL:", self.url)
+        print("HEADERS:", headers)
+        print("PAYLOAD:", payload)
+
 
         response = requests.post(
             self.url,
             headers=headers,
             json=payload
+        #     params={
+        #     "$top": 50
+        # }
         )
         if response.status_code in [200, 201]:
             return response.json()

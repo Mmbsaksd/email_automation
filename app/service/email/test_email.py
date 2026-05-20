@@ -6,6 +6,8 @@ from app.service.email.attachment_handler import AttachmentHandler
 from app.service.pdf.pdf_reader import PDFReader
 from app.service.ai.invoice_extractor import InvoiceExtractor
 from app.service.excel_writer import ExcelWriter
+from app.service.sap.payload_mapper import PayloadMapper
+from app.service.sap.sap_client import SAPClient
 
 
 parser = EmailParser()
@@ -16,6 +18,8 @@ attachment_handler = AttachmentHandler()
 pdf_reader = PDFReader()
 invoice_extractor = InvoiceExtractor()
 excel_writer = ExcelWriter()
+payload_mapper = PayloadMapper()
+sap_client = SAPClient()
 
 messages = reader.get_latest_email()
 
@@ -61,6 +65,10 @@ if pdf_attachment:
     invoice_data = invoice_extractor.extract_invoice_data(
         pdf_text
     )
+    sap_payload = payload_mapper.map_to_sap_payload(invoice_data)
+    sap_response = sap_client.create_supplier_invoice(
+        sap_payload.model_dump()
+    )
     parser_headers["invoice_data"] = invoice_data.model_dump()
     excel_writer.save_invoice(
         invoice_data
@@ -68,3 +76,4 @@ if pdf_attachment:
 else:
     print("No PDF attachment found")
 print(parser_headers)
+print(sap_response)
