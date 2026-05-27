@@ -65,10 +65,10 @@ if pdf_attachment:
     invoice_data = invoice_extractor.extract_invoice_data(
         pdf_text
     )
-    sap_payload = payload_mapper.map_to_sap_payload(invoice_data)
-    sap_response = sap_client.create_supplier_invoice(
-        sap_payload.model_dump()
-    )
+    # sap_payload = payload_mapper.map_to_sap_payload(invoice_data)
+    # sap_response = sap_client.create_supplier_invoice(
+    #     sap_payload.model_dump()
+    # )
     parser_headers["invoice_data"] = invoice_data.model_dump()
     excel_writer.save_invoice(
         invoice_data
@@ -76,4 +76,4 @@ if pdf_attachment:
 else:
     print("No PDF attachment found")
 print(parser_headers)
-print(sap_response)
+# print(sap_response)
